@@ -1,0 +1,23 @@
+[project]
+name = "personal-budget-manager"
+version = "0.1.0"
+description = "Interactive personal budget manager (Release 1)"
+readme = "README.md"
+authors = [
+    { name = "Christian Da Silva De Goes", email = "234804319+christiandsdg@users.noreply.github.com" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+budget-manager = "budget_manager.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.19,<0.13.0"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "budget_manager"
+
+[dependency-groups]
+dev = ["pytest>=8.0"]

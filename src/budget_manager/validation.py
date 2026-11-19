@@ -108,6 +108,18 @@ _PARSERS = {
 }
 
 
+def parse_field(field: str, value: object) -> object:
+    """Validate one field and return its clean value.
+
+    Used for whole records (build_transaction) and for checking each answer
+    the moment the user types it (cli). Raises ValueError with a message.
+    """
+    text = "" if value is None else str(value).strip()
+    if not text:
+        raise ValueError(f"{field} is required")
+    return _PARSERS[field](text)
+
+
 # --- Record builder ------------------------------------------------------
 
 
@@ -120,13 +132,8 @@ def build_transaction(raw: Mapping[str, object], row: int | None = None) -> Tran
     problems: list[str] = []
 
     for field in FIELDS:
-        value = raw.get(field)
-        text = "" if value is None else str(value).strip()
-        if not text:
-            problems.append(f"{field} is required")
-            continue
         try:
-            clean[field] = _PARSERS[field](text)
+            clean[field] = parse_field(field, raw.get(field))
         except ValueError as exc:
             problems.append(str(exc))
 

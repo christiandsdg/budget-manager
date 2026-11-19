@@ -10,7 +10,7 @@ from pathlib import Path
 
 from budget_manager import services, storage
 from budget_manager.models import CATEGORIES, Kind, Transaction
-from budget_manager.validation import ValidationError
+from budget_manager.validation import ValidationError, parse_field
 
 DEFAULT_FILE = Path("data/transactions.csv")
 
@@ -59,15 +59,29 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
 
+PROMPTS = {
+    "date": "Date (YYYY-MM-DD): ",
+    "kind": f"Kind ({' / '.join(k.value for k in Kind)}): ",
+    "category": f"Category ({', '.join(sorted(CATEGORIES))}): ",
+    "amount": "Amount (e.g. 18.50): ",
+    "currency": "Currency (ISO code, e.g. EUR): ",
+}
+
+
+def ask(field: str) -> str:
+    """Prompt until the answer passes that field's validation rule."""
+    while True:
+        answer = input(PROMPTS[field])
+        try:
+            parse_field(field, answer)
+            return answer
+        except ValueError as problem:
+            print(f"  ✗ {problem}. Try again.")
+
+
 def add_flow(transactions: list[Transaction], path: Path) -> list[Transaction]:
-    """Prompt for one transaction; save immediately if valid."""
-    raw = {
-        "date": input("Date (YYYY-MM-DD): "),
-        "kind": input(f"Kind ({' / '.join(k.value for k in Kind)}): "),
-        "category": input(f"Category ({', '.join(sorted(CATEGORIES))}): "),
-        "amount": input("Amount (e.g. 18.50): "),
-        "currency": input("Currency (ISO code, e.g. EUR): "),
-    }
+    """Prompt for one transaction (each answer checked on entry); save immediately."""
+    raw = {field: ask(field) for field in PROMPTS}
     try:
         updated = services.add_transaction(transactions, raw)
     except ValidationError as error:

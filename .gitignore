@@ -8,3 +8,6 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Personal ledger written by the app (sample data stays tracked)
+data/transactions.csv

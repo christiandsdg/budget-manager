@@ -1,4 +1,4 @@
-"""Budget logic: add, list, filter, summarize.
+"""Budget logic: add, list, summarize.
 
 Pure functions only: they take a list of transactions and return new values.
 Nothing here prompts the user, prints, or touches files — so every rule can be
@@ -7,7 +7,6 @@ tested directly with plain lists, and the CLI and storage layers stay thin.
 
 from collections.abc import Iterable, Mapping
 from dataclasses import dataclass, field
-from datetime import date
 from decimal import Decimal
 
 from budget_manager.models import Kind, Transaction
@@ -39,33 +38,12 @@ def add_transaction(
     return [*transactions, build_transaction(record)]
 
 
-# --- Listing and filtering -------------------------------------------------
+# --- Listing ---------------------------------------------------------------
 
 
 def list_transactions(transactions: Iterable[Transaction]) -> list[Transaction]:
     """All transactions in chronological order (ties broken by id)."""
     return sorted(transactions, key=lambda t: (t.date, t.id))
-
-
-def filter_transactions(
-    transactions: Iterable[Transaction],
-    *,
-    kind: Kind | None = None,
-    category: str | None = None,
-    currency: str | None = None,
-    start: date | None = None,
-    end: date | None = None,
-) -> list[Transaction]:
-    """Keep transactions matching every given filter. Date range is inclusive."""
-    return [
-        t
-        for t in list_transactions(transactions)
-        if (kind is None or t.kind is kind)
-        and (category is None or t.category == category)
-        and (currency is None or t.currency == currency)
-        and (start is None or t.date >= start)
-        and (end is None or t.date <= end)
-    ]
 
 
 # --- Reporting -------------------------------------------------------------

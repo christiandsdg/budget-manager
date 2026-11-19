@@ -113,13 +113,22 @@ def show_report(transactions: list[Transaction]) -> None:
     if not summaries:
         print("No transactions yet.")
         return
+    width = 34  # every line is this wide, so all amounts end in the same column
+    rule = "─" * width
+
+    def line(label: str, amount) -> str:
+        return f"{label:<{width - 14}}{amount:>14,.2f}"
+
     for s in summaries.values():
-        print(f"\n{s.currency}  ({s.count} transaction(s))")
-        print(f"  Income   {s.income:>12,.2f}")
-        print(f"  Expenses {s.expenses:>12,.2f}")
-        print(f"  Balance  {s.balance:>12,.2f}")
+        noun = "transaction" if s.count == 1 else "transactions"
+        print(f"\n{s.currency} · {s.count} {noun}")
+        print(rule)
+        print(line("Income", s.income))
+        print(line("Expenses", s.expenses))
         for category, amount in sorted(s.expenses_by_category.items()):
-            print(f"    {category:<15}{amount:>12,.2f}")
+            print(line(f"  {category}", amount))
+        print(rule)
+        print(line("Balance", s.balance))
 
 
 if __name__ == "__main__":

@@ -4,12 +4,10 @@ I acknowledge the use of [Claude (Anthropic), model Claude Opus 5.5](https://cla
 
 The prompts used include:
 
-- "I need your help with the assignment" (with the assignment PDF attached)
 - "When you create a class, how do you specify the data types?" and "Why are you using frozenset?"
 - "Help me create the repo and I'll have you do it."
 - "Do not add the `__init__.py` because it's not in the requested architecture."
 - Answers to Claude's design questions: reject unknown categories, accept any valid ISO currency, store amounts as `Decimal` with at most 2 decimal places, generate IDs automatically (T001, T002, …)
-- "Go ahead and create storage."
 - "Just remember the scope from the slides. Do only what's necessary, while implementing validation."
 - "Give me the error before I reach the end of creating the transaction."
 - "The report menu looks strange. Make it look better."
